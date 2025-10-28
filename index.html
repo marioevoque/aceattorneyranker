@@ -1729,12 +1729,7 @@ function doImport(){
   };
   inp.click();
 }
-function doReset(){
-  if(!confirm("Azzero TUTTI i voti e i meta (casi + meccanica + memorabilità + durata/parti + nomi)?")) return;
-  votes={}; mech={}; memo={}; localStorage.removeItem(K_META); localStorage.removeItem(K_NAMES);
-  localStorage.setItem(K_VOTES,"{}"); localStorage.setItem(K_MECH,"{}"); localStorage.setItem(K_MEMO,"{}");
-  onGameChanged();
-}
+
 
 // ===== Init =====
 function onGameChanged(){
