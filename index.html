@@ -283,6 +283,16 @@ body.theme-orange  .mmBox .name { background:#8f4711 !important; }
 /* hide legacy tooltip while our tip is active */
 body[data-char-tip-active="1"] #tooltipCard,
 body[data-char-tip-active="1"] 
+
+/* === Disable native tooltip on underbar elements === */
+.mmBox[data-key="mech"] .underbar [title],
+.mmBox[data-key="mech"] .underbar {
+  pointer-events: auto;
+}
+.mmBox[data-key="mech"] .underbar [title] {
+  pointer-events: none !important;
+}
+
 </style>
 <style id="aa-theme-palettes-v938">
   /* Default (bordeaux already defined in :root) */
@@ -1265,8 +1275,98 @@ body.theme-orange .mmBox .name  { background:#8f4711 !important; }
 <!-- Backup icon if others fail -->
 <link rel="icon" type="image/png" href="icon.png">
 
+
+
+<style id="TOOL_PATCH_V1_CSS">
+/* Underbar just under the Meccanica title bar */
+.mmBox[data-key="mech"] .underbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  background: rgba(255,255,255,0.12);
+  border-top: 0 solid var(--panel-border);
+  border-bottom: 0 solid var(--panel-border);
+  min-height: 10px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.mmBox[data-key="mech"] .underbar .chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.18);
+  border:1px solid var(--panel-border);
+  font-size: 12px; font-weight: 800;
+  white-space: nowrap;
+}
+
+/* TOOL container (do NOT name as tooltip) */
+#TOOL_BOX{
+  position: fixed; z-index: 2147483646; display: none;
+  padding: 14px 16px;
+  background: #bba45c; /* desaturated gold */
+  color: #fff; /* white font */
+  font-family: inherit; /* inherit site font */
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  max-width: min(96vw, 760px);
+  pointer-events: auto;
+}
+#TOOL_BOX .tool-grid{ display: grid; gap: 12px; }
+#TOOL_BOX.one .tool-grid{ display:block; }
+#TOOL_BOX.two .tool-grid{ grid-template-columns: repeat(2, 360px); }
+#TOOL_BOX.multi .tool-grid{ grid-template-columns: repeat(2, 360px); }
+#TOOL_BOX .tool-card{
+  display:grid; grid-template-columns:100px 1fr; grid-template-rows:auto 1fr;
+  gap:8px 12px; width:360px; min-height:110px; padding:10px; border-radius:10px;
+  background: rgba(0,0,0,0.18);
+}
+#TOOL_BOX .tool-card .pic{ grid-row:1 / span 2; width:100px; height:100px; border-radius:8px; overflow:hidden; background:rgba(0,0,0,0.20); }
+#TOOL_BOX .tool-card .pic img{ width:100%; height:100%; object-fit:cover; display:block; }
+#TOOL_BOX .tool-card .name{ margin:0; font-weight:900; font-size:1.05em; line-height:1.1; }
+#TOOL_BOX .tool-card .desc{ font-size:.9em; line-height:1.25; opacity:.95; align-self:end; }
+
+/* Nav arrows inside TOOL */
+#TOOL_BOX .navBtn{ display:flex;
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; border-radius:999px; border:1px solid rgba(0,0,0,0.25);
+  background:rgba(0,0,0,0.22); color:#fff; font-weight:900; font-size:18px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; user-select:none;
+  box-shadow:0 6px 20px rgba(0,0,0,.25);
+}
+#TOOL_BOX .navBtn[disabled]{ opacity:.35; pointer-events:none; }
+#TOOL_BOX .prev{ left:8px; }
+#TOOL_BOX .next{ right:8px; }
+#TOOL_BOX .dots{ position:absolute; left:0; right:0; bottom:6px; display:flex; gap:6px; justify-content:center; }
+#TOOL_BOX .dot{ width:8px; height:8px; border-radius:999px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,0.25); }
+#TOOL_BOX .dot.on{ background:#fff; }
+
+@media (max-width: 540px){
+  .mmBox[data-key="mech"] .underbar{ width: 92%; }
+  #TOOL_BOX .tool-grid{ grid-template-columns: 1fr !important; }
+  #TOOL_BOX .tool-card{ width: calc(92vw - 48px); grid-template-columns:84px 1fr; }
+  #TOOL_BOX .tool-card .pic{ width:84px; height:84px; }
+}
+
+/* --- PATCH: position nav arrows inside TOOL_BOX --- */
+#TOOL_BOX .navBtn{ display:flex; z-index:2147483647; }
+#TOOL_BOX .navBtn.prev{ left:10px; }
+#TOOL_BOX .navBtn.next{ right:10px; }
+/* --- end PATCH --- */
+</style>
+
 </head>
 <body>
+<div id="TOOL_BOX"><div class="tool-grid"></div><button class="navBtn prev" aria-label="Prev">‹</button><button class="navBtn next" aria-label="Next">›</button><div class="dots"></div></div>
+
 <div id="tooltipCard" hidden inert aria-hidden="true" style="display:none!important;visibility:hidden!important;pointer-events:none!important;position:fixed!important;left:-999999px!important;top:-999999px!important;width:0!important;height:0!important;opacity:0!important;z-index:-2147483647!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important"></div>
 
 <div id="whoLiteTip" hidden inert aria-hidden="true" style="display:none!important;visibility:hidden!important;pointer-events:none!important;position:fixed!important;left:-999999px!important;top:-999999px!important;width:0!important;height:0!important;opacity:0!important;z-index:-2147483647!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important"></div>
@@ -1293,6 +1393,7 @@ body.theme-orange .mmBox .name  { background:#8f4711 !important; }
 <div class="mmWrap">
 <div class="mmBox" data-key="mech">
 <div class="name">Meccanica <span class="max">(max 5)</span></div>
+<div class="underbar" id="mechUnderbar"></div>
 <div class="val" id="mechVal">0</div>
 <div class="controls">
 <button class="round" data-act="dec" data-key="mech">−</button>
@@ -9865,6 +9966,606 @@ function wire(){
   else document.addEventListener('DOMContentLoaded', sizeLogoDiv5);
 })();
 </script>
+
+
+<script id="WHAT_TOOL_DATA" type="application/json">
+{
+  "0": [    
+    {
+      "meccanica": "Scienze forensi",
+      "descrizione": "Meccaniche introdotte nel caso bonus: utilizzo di polvere per impronte e luminol per individuare tracce di sangue.",
+      "image_dir": "./meccanica/scienzeforensi.png"
+    }
+  ],
+  "1": [
+    {
+      "meccanica": "Magatama",
+      "descrizione": "Artefatto spirituale donato da Maya Fey che permette di visualizzare i blocchi psichici e infrangerli presentando prove o profili corretti per svelare la verità.",
+      "image_dir": "./meccanica/magatama.png"
+    }
+  ],
+  "2": [
+    {
+      "meccanica": "Magatama",
+      "descrizione": "Ritorna il Magatama come strumento per scoprire i segreti nascosti dei testimoni: permette di percepire e rompere i blocchi psichici presentando prove o profili appropriati, anche in aula.",
+      "image_dir": "./meccanica/magatama.png"
+    }
+  ],
+  "3": [    
+    {
+      "meccanica": "Bracciale",
+      "descrizione": "Il bracciale di Apollo permette di percepire lievi tic e micro-espressioni nei testimoni durante le deposizioni, rivelando momenti di menzogna.",
+      "image_dir": "./meccanica/bracciale.png"
+    },
+    {
+      "meccanica": "Scienze forensi",
+      "descrizione": "Reintroduzione degli strumenti di analisi scientifica come impronte, luminol e polveri, ora utilizzabili in più contesti investigativi.",
+      "image_dir": "./meccanica/scienzeforensi1.png"
+    },
+    {
+      "meccanica": "Magatama",
+      "descrizione": "Ritorna in alcune sezioni sotto forma di lucchetti neri. È meno centrale rispetto alla trilogia originale ma mantiene la funzione di svelare segreti nascosti dei personaggi.",
+      "image_dir": "./meccanica/magatama1.png"
+    }
+  ],
+  "4": [
+    {
+      "meccanica": "Mood Matrix",
+      "descrizione": "Con Athena analizzi le emozioni del testimone (gioia, rabbia, tristezza, sorpresa) per trovare incongruenze emotive nella testimonianza.",
+      "image_dir": "./meccanica/moodmatrix.png"
+    },
+    {
+      "meccanica": "Bracciale - Magatama",
+      "descrizione": "Presenti ma meno rilevanti rispetto agli altri titoli.",
+      "image_dir": "./meccanica/bratama1.png"
+    },
+    {
+      "meccanica": "Scienze forensi",
+      "descrizione": "Uso di luminol e polvere per impronte durante alcune indagini (es. nello Special Episode), per rivelare tracce e confrontare impronte.",
+      "image_dir": "./meccanica/scienzeforensi1.png"
+    }
+    
+  ],
+  "5": [
+    {
+      "meccanica": "Mood Matrix",
+      "descrizione": "Sistema di analisi emotiva di Athena Cykes per rivelare incongruenze tra emozioni e dichiarazioni dei testimoni.",
+      "image_dir": "./meccanica/moodmatrix.png"
+    },
+    {
+      "meccanica": "Bracciale - Magatama",
+      "descrizione": "Presenti ma meno rilevanti rispetto agli altri titoli.",
+      "image_dir": "./meccanica/bratama1.png"
+    },
+    {
+      "meccanica": "Divination Séance",
+      "descrizione": "Meccanica esclusiva di Khura’in: mostra le ultime percezioni della vittima prima della morte e consente di confrontarle con le testimonianze per individuare contraddizioni.",
+      "image_dir": "./meccanica/divinationseance.png"
+    },
+    {
+      "meccanica": "Scienze forensi",
+      "descrizione": "Utilizzo di strumenti scientifici nelle indagini, come luminol e polveri per impronte, per raccogliere prove decisive.",
+      "image_dir": "./meccanica/scienzeforensi1.png"
+    }
+    
+	
+  ],
+  "6": [
+      
+    {
+      "meccanica": "Logica",
+      "descrizione": "Sistema centrale: collega due informazioni correlate per formulare una conclusione deduttiva e avanzare nell’indagine.",
+      "image_dir": "./meccanica/logica.png"
+    },
+    {
+      "meccanica": "Rebuttal",
+      "descrizione": "Faccia-a-faccia in sostituzione del processo: confuta le affermazioni presentando l’evidenza corretta fino a smontare la versione del testimone.",
+      "image_dir": "./meccanica/confrontation.png"
+    },
+    {
+      "meccanica": "Scienze forensi",
+      "descrizione": "Analisi di scena con strumenti come polvere per impronte e luminol; in alcuni casi ricostruzioni della scena con supporti tecnologici.",
+      "image_dir": "./meccanica/scienzeforensi.png"
+    },
+    {
+      "meccanica": "Little Thief",
+      "descrizione": "Dispositivo di Kay Faraday che permette di ricreare e visualizzare simulazioni della scena del crimine per testare ipotesi.",
+      "image_dir": "./meccanica/littlethief.png"
+    }
+  ],
+  "7": [    
+    {
+      "meccanica": "Logica",
+      "descrizione": "Sistema principale che collega due informazioni correlate per formulare deduzioni e far avanzare l’indagine.",
+      "image_dir": "./meccanica/logica.png"
+    },
+    
+    {
+      "meccanica": "Rebuttal - Mind Chess",
+      "descrizione": "Fase in cui si confutano affermazioni presentando prove corrette. - Confronto dialettico in forma di partita a scacchi: Edgeworth valuta le risposte dell’interlocutore e sceglie le mosse corrette per spingerlo a rivelare la verità.",
+      "image_dir": "./meccanica/rebchess.png"
+    },
+    {
+      "meccanica": "Scienze forensi",
+      "descrizione": "Analisi di reperti e scene del crimine con strumenti scientifici e tecnologie olografiche avanzate.",
+      "image_dir": "./meccanica/scienzeforensi.png"
+    },
+    {
+      "meccanica": "Little Thief",
+      "descrizione": "Dispositivo di Kay Faraday che permette di visualizzare simulazioni virtuali della scena per verificare teorie e ricostruzioni.",
+      "image_dir": "./meccanica/littlethief.png"
+    }
+  ],
+  "8": [    
+    {
+      "meccanica": "Deduzione collaborativa",
+      "descrizione": "Collaborazione con Herlock Sholmes: correggi le sue deduzioni errate trovando contraddizioni visive o logiche per arrivare alla verità.",
+      "image_dir": "./meccanica/deduzione.png"
+    },
+    {
+      "meccanica": "Summation Examination",
+      "descrizione": "Analisi delle opinioni dei giurati: individua contraddizioni tra i loro giudizi e ribalta il verdetto presentando prove o ragionamenti logici.",
+      "image_dir": "./meccanica/summation.png"
+    }
+  ],
+  "9": [
+    {
+      "meccanica": "Deduzione collaborativa",
+      "descrizione": "Sistema approfondito di cooperazione con Herlock Sholmes: correggi deduzioni errate, analizza indizi e ricostruisci gli eventi reali passo dopo passo.",
+      "image_dir": "./meccanica/deduzione.png"
+    },
+    {
+      "meccanica": "Summation Examination",
+      "descrizione": "Esamina e ribalta le opinioni dei giurati trovando contraddizioni tra le loro argomentazioni per convincerli della verità.",
+      "image_dir": "./meccanica/summation.png"
+    },
+	{
+      "meccanica": "Scienze forensi",
+      "descrizione": "Innovazioni in epoca vittoriana per vedere le impronte.",
+      "image_dir": "./meccanica/forensi.png"
+    }
+  ],
+  "10": [   
+       
+    {
+      "meccanica": "Puzzle Investigativi",
+      "descrizione": "Enigmi logici e visivi in stile Professor Layton da risolvere per ottenere indizi, chiavi o nuove prove durante le indagini.",
+      "image_dir": "./meccanica/puzzle.png"
+    },
+    {
+      "meccanica": "Story Link System",
+      "descrizione": "Sistema narrativo che alterna la prospettiva di Layton e quella di Phoenix, collegando indagini e processi in un’unica trama coerente.",
+      "image_dir": "./meccanica/story.png"
+    }
+  ]
+}
+</script>
+
+<script id="TOOL_PATCH_V1_JS">
+(function(){
+  const DATA = (function(){
+    try{
+      const el = document.getElementById('WHAT_TOOL_DATA');
+      return el ? JSON.parse(el.textContent.trim()) : {};
+    }catch(e){ return {}; }
+  })();
+
+  const UNDERBAR = document.getElementById('mechUnderbar');
+  const TOOL = document.getElementById('TOOL_BOX');
+  const GRID = TOOL.querySelector('.tool-grid');
+  const BTN_PREV = TOOL.querySelector('.prev');
+  const BTN_NEXT = TOOL.querySelector('.next');
+  const DOTS = TOOL.querySelector('.dots');
+
+  let state = { items:[], slide:0, totalSlides:1, anchor:null };
+
+  function currentGameIndex(){
+    // Prefer dot indicator
+    const dotsWrap = document.getElementById('gameDots');
+    if(dotsWrap){
+      const dots = Array.from(dotsWrap.querySelectorAll('.dot'));
+      const idx = dots.findIndex(d => d.classList.contains('on'));
+      if(idx >= 0) return idx;
+    }
+    // Fallback: read dataset on #gameSlides if any
+    const slides = document.getElementById('gameSlides');
+    if(slides && slides.dataset && slides.dataset.index){
+      return parseInt(slides.dataset.index, 10) || 0;
+    }
+    return 0;
+  }
+
+  function buildUnderbar(){
+    const gid = String(currentGameIndex());
+    const list = DATA[gid] || [];
+    UNDERBAR.innerHTML = '';
+    if(!list.length){
+      const span = document.createElement('span');
+      span.textContent = '—';
+      span.style.opacity = '.6';
+      UNDERBAR.appendChild(span);
+      UNDERBAR.removeAttribute('title');
+      return;
+    }
+    list.forEach(m => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = m.meccanica || '—';
+      UNDERBAR.appendChild(chip);
+    });
+    UNDERBAR.removeAttribute('title');
+  }
+
+  function buildCard(m){
+    const card = document.createElement('div');
+    card.className = 'tool-card';
+    const img = document.createElement('img');
+    img.alt = '';
+    img.src = (m.image_dir || '').trim();
+    const pic = document.createElement('div');
+    pic.className = 'pic';
+    pic.appendChild(img);
+    const name = document.createElement('h4');
+    name.className = 'name';
+    name.textContent = m.meccanica || '—';
+    const desc = document.createElement('div');
+    desc.className = 'desc';
+    desc.textContent = m.descrizione || '';
+    card.appendChild(pic);
+    card.appendChild(name);
+    card.appendChild(desc);
+    return card;
+  }
+
+  function renderTool(){
+    const n = state.items.length;
+    TOOL.classList.toggle('one', n===1);
+    TOOL.classList.toggle('two', n===2);
+    TOOL.classList.toggle('multi', n>2);
+
+    GRID.innerHTML = '';
+    let pair = [];
+    if(n===1){
+      pair = [ state.items[0] ];
+    }else if(n===2){
+      pair = [ state.items[0], state.items[1] ];
+    }else{
+      const start = state.slide * 2;
+      pair = state.items.slice(start, start+2);
+    }
+    pair.forEach(m => GRID.appendChild(buildCard(m)));
+
+    // resize width to avoid wrapping
+    const gap = 12, cardW = 360;const cols = (n===1) ? 1 : 2;
+    GRID.style.width = (cols===1 ? cardW : (cardW*2 + gap)) + 'px';
+    GRID.style.minWidth = GRID.style.width;
+
+    state.totalSlides = Math.max(1, Math.ceil(n/2));
+  
+  // --- unified visibility logic here ---
+  const showArrows = n >= 3;                 // arrows only when 3+ items
+  const showDots   = state.totalSlides > 1;  // dots only if multiple pages
+
+  // Clear any previous inline display:none and set consistently
+  BTN_PREV.style.display = showArrows ? '' : 'none';
+  BTN_NEXT.style.display = showArrows ? '' : 'none';
+  BTN_PREV.hidden = !showArrows;
+  BTN_NEXT.hidden = !showArrows;
+
+  DOTS.hidden = !showDots;
+  DOTS.innerHTML = '';
+  if (showDots){
+    for(let i=0;i<state.totalSlides;i++){
+      const d = document.createElement('div');
+      d.className = 'dot' + (i===state.slide?' on':'');
+      DOTS.appendChild(d);
+    }
+  }
+
+  // enable/disable ends
+  BTN_PREV.toggleAttribute('disabled', state.slide===0);
+  BTN_NEXT.toggleAttribute('disabled', state.slide===state.totalSlides-1);
+
+}
+
+
+  function positionTool(anchor){
+    const a = anchor.getBoundingClientRect();
+    TOOL.style.display = 'block';
+    requestAnimationFrame(()=>{
+      const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const w = Math.min(TOOL.offsetWidth || 760, vw * 0.96);
+      let left = a.left + (a.width/2) - (w/2);
+      left = Math.max(8, Math.min(left, vw - w - 8));
+      const above = a.top >= (TOOL.offsetHeight + 18);
+      const top = (a.top >= ((TOOL && TOOL.offsetHeight) + 18) ? (a.top - ((TOOL && TOOL.offsetHeight) + 4)) : (a.bottom + 4));
+      TOOL.style.left = left + 'px';
+      TOOL.style.top = top + 'px';
+    });
+  }
+
+  function openTool(anchor){
+    const gid = String(currentGameIndex());
+    const list = DATA[gid] || [];
+    if(!list.length) return;
+    state.items = list;
+    state.slide = 0;
+    state.anchor = anchor;
+    renderTool();
+    positionTool(anchor);
+    TOOL.dataset.open = "1";
+    document.addEventListener('keydown', escCloseOnce, { once: true });
+  }
+
+  function escCloseOnce(e){ if(e.key === 'Escape'){ closeTool(); } }
+  function closeTool(){
+    TOOL.style.display = 'none';
+    TOOL.dataset.open = "0";
+  }
+
+  // Events
+  UNDERBAR.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(TOOL.dataset.open === "1"){ closeTool(); return; }
+    openTool(UNDERBAR);
+  });
+  UNDERBAR.addEventListener('mouseenter', function(){
+    if(TOOL.dataset.open !== "1") openTool(UNDERBAR);
+  });
+  TOOL.addEventListener('mouseleave', function(e){ /* disabled auto-close to avoid accidental closes while interacting */ // === CLICKABLE NAV ARROWS INSIDE TOOL ===
+
+  // === Close TOOL if cursor remains outside TOOL and UNDERBAR for >500ms ===
+let __toolHoverTimer = null;
+document.addEventListener('mousemove', function(e){
+  if (TOOL.dataset.open !== "1") return;
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const insideTool  = el && (el === TOOL || (el.closest && el.closest('#TOOL_BOX')));
+  const insideUnder = el && ((el.classList && el.classList.contains('underbar')) || (el.closest && el.closest('.underbar')));
+  const inside = !!(insideTool || insideUnder);
+  if (inside){
+    if (__toolHoverTimer) { clearTimeout(__toolHoverTimer); __toolHoverTimer = null; }
+    return;
+  }
+  if (__toolHoverTimer) clearTimeout(__toolHoverTimer);
+  __toolHoverTimer = setTimeout(function(){
+    const nowEl = document.elementFromPoint(e.clientX, e.clientY);
+    const nowInsideTool  = nowEl && (nowEl === TOOL || (nowEl.closest && nowEl.closest('#TOOL_BOX')));
+    const nowInsideUnder = nowEl && ((nowEl.classList && nowEl.classList.contains('underbar')) || (nowEl.closest && nowEl.closest('.underbar')));
+    if (!(nowInsideTool || nowInsideUnder)) closeTool();
+  }, 500);
+}, {passive:true});
+// === SAFE hover-out close: closes only if pointer truly leaves TOOL (after small delay) ===
+  TOOL.addEventListener('mouseleave', function(e){
+    // if moving to any child of TOOL, ignore
+    const rt = e.relatedTarget;
+    if (rt && (rt === TOOL || (rt.closest && rt.closest('#TOOL_BOX')))) return;
+    const x = (e.clientX !== undefined) ? e.clientX : -1;
+    const y = (e.clientY !== undefined) ? e.clientY : -1;
+    // delay lets layout settle after re-render so elementFromPoint is reliable
+    setTimeout(function(){
+      const el = document.elementFromPoint(x, y);
+      const insideTool  = el && (el === TOOL || (el.closest && el.closest('#TOOL_BOX')));
+      const insideUnder = el && ((el.classList && el.classList.contains('underbar')) || (el.closest && el.closest('.underbar')));
+      const stillInside = !!(insideTool || insideUnder);
+      if (!stillInside) closeTool();
+    }, 140);
+  }, {passive:true});
+
+  function goPrev(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    if(state.slide > 0){
+      state.slide--;
+      renderTool();
+      if(state.anchor) positionTool(state.anchor);
+    }
+  }
+  function goNext(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    const max = state.totalSlides - 1;
+    if(state.slide < max){
+      state.slide++;
+      renderTool();
+      if(state.anchor) positionTool(state.anchor);
+    }
+  }
+  if(BTN_PREV){ 
+    BTN_PREV.addEventListener('click', goPrev); 
+    BTN_PREV.addEventListener('mousedown', goPrev);
+    BTN_PREV.addEventListener('touchstart', goPrev, {passive:false});
+  }
+  if(BTN_NEXT){ 
+    BTN_NEXT.addEventListener('click', goNext); 
+    BTN_NEXT.addEventListener('mousedown', goNext);
+    BTN_NEXT.addEventListener('touchstart', goNext, {passive:false});
+  }
+  // Keyboard support while TOOL is open
+  document.addEventListener('keydown', function(e){
+    if(TOOL.dataset.open !== "1") return;
+    if(e.key === 'ArrowLeft') goPrev(e);
+    if(e.key === 'ArrowRight') goNext(e);
+  });
+  // Dots click to jump to slide
+  if(DOTS){
+    DOTS.addEventListener('click', function(e){
+      const d = e.target && e.target.classList && e.target.classList.contains('dot') ? e.target : null;
+      if(!d) return;
+      e.preventDefault(); e.stopPropagation();
+      const dots = Array.from(DOTS.querySelectorAll('.dot'));
+      const idx = dots.indexOf(d);
+      if(idx >= 0 && idx < state.totalSlides){
+        state.slide = idx;
+        renderTool();
+        if(state.anchor) positionTool(state.anchor);
+      }
+    });
+  }
+});
+
+
+  // Rebuild underbar on game change (observe dot changes + prev/next click)
+  const gameDots = document.getElementById('gameDots');
+  const gamePrev = document.getElementById('gamePrev');
+  const gameNext = document.getElementById('gameNext');
+
+  function refresh(){
+    buildUnderbar();
+
+  // Guard: ensure underbar has no native title tooltip
+  (function(){
+    if (UNDERBAR) UNDERBAR.removeAttribute('title');
+    try{
+      const mo = new MutationObserver(() => { if (UNDERBAR) UNDERBAR.removeAttribute('title'); });
+      if (UNDERBAR) mo.observe(UNDERBAR, { attributes:true, attributeFilter:['title'] });
+    }catch(_){}
+  })();
+
+  TOOL.addEventListener('click', (e)=> e.stopPropagation());
+    if(TOOL.dataset.open === "1"){ openTool(UNDERBAR); } // reopen with new data
+  }
+
+  if(gameDots && window.MutationObserver){
+    const mo = new MutationObserver(refresh);
+    mo.observe(gameDots, { attributes:true, subtree:true, attributeFilter:['class'] });
+  }
+  if(gamePrev) gamePrev.addEventListener('click', ()=> setTimeout(refresh, 0));
+  if(gameNext) gameNext.addEventListener('click', ()=> setTimeout(refresh, 0));
+
+  // Initial
+  buildUnderbar();
+  // Also close on global click outside
+  document.addEventListener('click', function(e){
+    const p = e.composedPath ? e.composedPath() : null;
+    const insideTool = p ? p.includes(TOOL) : TOOL.contains(e.target);
+    const onUnderbar = (e.target === UNDERBAR) || (p ? p.includes(UNDERBAR) : false);
+    if(!insideTool && !onUnderbar) closeTool();
+});
+
+  window.addEventListener('resize', function(){ if(TOOL.dataset.open === "1") positionTool(UNDERBAR); });
+
+})();
+</script>
+
+<script>
+
+(function(){
+  const TOOL = document.getElementById('TOOL_BOX');
+  if(!TOOL) return;
+  // Nav visibility handled inside renderTool(); keep this stub to avoid conflicts.
+  window.TOOL_refreshArrows = function(){};
+})();
+</script>
+
+
+<script>
+(function(){
+  const TOOL = document.getElementById('TOOL_BOX');
+  if(!TOOL) return;
+  let raf = null;
+  function hideOnScroll(){
+    if(raf !== null) return;
+    raf = requestAnimationFrame(()=>{
+      raf = null;
+      // Close/hide TOOL on scroll
+      TOOL.style.display = 'none';
+      TOOL.setAttribute('aria-hidden', 'true');
+    TOOL.dataset.open = "0";
+});
+  }
+  window.addEventListener('scroll', hideOnScroll, {passive:true});
+})();
+</script>
+
+
+/* === COMPACT MODE: -10px title bar & underbar === */
+<style>
+:root{
+  --mmTitleH: 46px;      /* 56 → 46 (-10) */
+  
+}
+
+.mmBox{ 
+  padding-top: var(--mmTitleH) !important;
+}
+
+.mmBox .name{
+  height: var(--mmTitleH) !important;
+  line-height: var(--mmTitleH) !important; /* centra il testo verticalmente */
+}
+
+/* Underbar (Meccanica) più bassa di 10px */
+.mmBox[data-key="mech"] .underbar{
+  min-height: var(--mmUnderbarHmin) !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+</style>
+
+
+/* === Ultra-compact underbar: -5px more, smaller font, text-only chips with ellipsis === */
+<style>
+:root{
+  --mmUnderbarHmin: 24px; /* 6px → 1px (-5) */
+}
+
+/* Make underbar a single-line, clipped container */
+.mmBox[data-key="mech"] .underbar{
+  min-height: var(--mmUnderbarHmin) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  gap: 6px !important;            /* un po' di respiro tra voci */
+}
+
+/* Chips become plain text with ellipsis */
+.mmBox[data-key="mech"] .underbar .chip{
+  display: inline-block !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.7em !important;    /* riduzione di ~0.3em */
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+}
+
+/* Ensure flex container allows shrinking of items */
+.mmBox[data-key="mech"] .underbar{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.mmBox[data-key="mech"] .underbar .chip{
+  flex: 0 1 auto !important; /* shrinkable */
+}
+</style>
+
+
+<style>
+/* === Virgole tra i nomi delle meccaniche (stile A, B, C) === */
+.mmBox[data-key="mech"] .underbar .chip::after {
+  content: ", ";
+  opacity: 0.7;
+}
+.mmBox[data-key="mech"] .underbar .chip:last-child::after {
+  content: "";
+}
+</style>
+
+
+<style id="hide-tool-dots">
+/* Nasconde completamente i dot di navigazione nel TOOL */
+#TOOL_BOX .dots {
+  display: none !important;
+  visibility: hidden !important;
+}
+</style>
 
 </body>
 <script>
